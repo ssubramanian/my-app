@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var app = {
+ var app = {
     // Application Constructor
     initialize: function() {
         this.bindEvents();
@@ -47,3 +47,30 @@ var app = {
         console.log('Received Event: ' + id);
     }
 };
+
+$(document).on('click', '.schedule-link', function(){  
+    var url = 'http://staging.activelifeadmin.com/dummy/websearch/public/index/getscheduleslist?branch_ids=3';        
+
+    $.ajax({
+        url: url,
+        dataType: "json",
+        async: true,
+        success: function (result) {
+            var items = [];
+
+            $.each(result, function(key, val) {
+                console.log(val.title);
+                items.push('<li id="' + key + '" class="ui-btn schedule-list-item">' + val.title + '</li>');
+            });
+
+            $('#schedule-list').empty();
+            $('#schedule-list').append(items.join(''));
+        },
+        error: function (request,error) {
+            alert('Network error has occurred please try again!');
+        }
+    });  
+});
+
+
+
