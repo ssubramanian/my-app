@@ -72,5 +72,49 @@ $(document).on('click', '.schedule-link', function(){
     });  
 });
 
+$(document).on('click', '.location-link', function(){  
+    navigator.geolocation.getCurrentPosition(disp);
+       
+});
+
+function disp(pos) {
+    console.log(pos);        
+    $('#location').empty();
+    
+    var geocoder = new google.maps.Geocoder();
+    var lat  = pos.coords.latitude;
+    var lng = pos.coords.longitude;
+    var latlng = new google.maps.LatLng(lat, lng);
+         geocoder.geocode({'latLng': latlng}, function(results, status) {
+           if (status == google.maps.GeocoderStatus.OK) {
+           console.log(results)
+             if (results[1]) {
+                               
+             //find country name
+                  for (var i=0; i<results[0].address_components.length; i++) {
+                 for (var b=0;b<results[0].address_components[i].types.length;b++) {
+
+                 //there are different types that might hold a city admin_area_lvl_1 usually does in come cases looking for sublocality type will be more appropriate
+                     if (results[0].address_components[i].types[b] == "administrative_area_level_1") {
+                         //this is the object you are looking for
+                         city= results[0].address_components[i];
+                         break;
+                     }
+                 }
+             }
+             //city data
+             $('#location').append('Your current location is <b>' + results[0].formatted_address + city.short_name + " " + city.long_name);
+             $('#location').append('</b> at ' + lat + ', ' + lng);
+
+             } else {
+               alert("No results found");
+             }
+           } else {
+             alert("Geocoder failed due to: " + status);
+           }
+
+    });
+}
+
 
 
